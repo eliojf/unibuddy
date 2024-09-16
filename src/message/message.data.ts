@@ -29,6 +29,7 @@ export class MessageData {
     chatMessage.conversationId = data.conversationId;
     chatMessage.created = new Date();
     chatMessage.deleted = false;
+    chatMessage.tags = data.tags;
 
     createRichContent(data, chatMessage);
 
@@ -362,5 +363,22 @@ export class MessageData {
     }
 
     return chatMessageToObject(updatedResult);
+  }
+  async updateTags(messageId: ObjectID, tags: string[]): Promise<ChatMessage> {
+    const result = await this.chatMessageModel.findOneAndUpdate(
+      { _id: messageId },
+      { $set: { tags } },
+      {
+        new: true,
+        returnOriginal: false,
+      },
+    );
+
+    if (!result) {
+      throw new Error(
+        `Failed to update tags for messageId: ${messageId.toHexString()}`,
+      );
+    }
+    return chatMessageToObject(result);
   }
 }

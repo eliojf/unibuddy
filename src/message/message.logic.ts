@@ -277,8 +277,6 @@ export class MessageLogic implements IMessageLogic {
     );
     return blockedUsers.map((user) => user.blockedUserId);
   }
-
-
   async getChatConversationMessages(
     getMessageDto: GetMessageDto,
     authenticatedUser: IAuthenticatedUser,
@@ -313,7 +311,6 @@ export class MessageLogic implements IMessageLogic {
       paginatedChatMessages,
       blockedUserIds,
     );
-  
 
     return paginatedChatMessages;
   }
@@ -696,5 +693,16 @@ export class MessageLogic implements IMessageLogic {
     }
 
     return pollOption;
+  }
+
+  async updateTags(messageId: ObjectID, tags: string[]): Promise<ChatMessage> {
+    try {
+      const updatedMessage = await this.messageData.updateTags(messageId, tags);
+      return updatedMessage;
+    } catch (error) {
+      throw new Error(
+        `Unable to update tags for messageId: ${messageId.toHexString()}`,
+      );
+    }
   }
 }
